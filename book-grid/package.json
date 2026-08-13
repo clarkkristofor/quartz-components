@@ -1,0 +1,18 @@
+{
+  "name": "quartz-plugin-book-grid",
+  "version": "1.0.0",
+  "main": "index.tsx",
+  "exports": {
+    ".": "./index.tsx",
+    "./components": "./index.tsx"
+  },
+  "quartz": {
+    "category": ["component"],
+    "defaultOptions": {
+      "folder": "books",
+      "title": "Books",
+      "limit": 4,
+      "columns": 3
+    }
+  }
+}
