@@ -6,6 +6,8 @@ import type {
 import { getBookStatus } from "../util/bookStatus"
 import type { BookStatus } from "../util/bookStatus"
 
+export type BookGridContext = "home" | "folderPage"
+
 export interface BookGridOptions {
   folder?: string
   status?: BookStatus
@@ -13,7 +15,7 @@ export interface BookGridOptions {
   limit?: number
   coverWidth?: number
   className?: string
-  restrictToHome?: boolean
+  restrictTo?: BookGridContext[]
 }
 
 const defaultOptions: Required<BookGridOptions> = {
@@ -23,7 +25,7 @@ const defaultOptions: Required<BookGridOptions> = {
   limit: 6,
   coverWidth: 150,
   className: "book-grid",
-  restrictToHome: true,
+  restrictTo: ["home"],
 }
 
 export default ((opts?: BookGridOptions) => {
@@ -32,7 +34,14 @@ export default ((opts?: BookGridOptions) => {
   const Component: QuartzComponent = (props: QuartzComponentProps) => {
     const slug = props.fileData.slug ?? ""
     const isHome = slug === "index" || slug === "" || slug === "/"
-    if (options.restrictToHome && !isHome) return null
+    const isFolderIndex = slug === `${options.folder}/index`
+
+    if (options.restrictTo.length > 0) {
+      const contextMatches =
+        (options.restrictTo.includes("home") && isHome) ||
+        (options.restrictTo.includes("folderPage") && isFolderIndex)
+      if (!contextMatches) return null
+    }
 
     const folder = options.folder
     const pages = props.allFiles
@@ -47,15 +56,16 @@ export default ((opts?: BookGridOptions) => {
         const dateB = b.frontmatter?.date_finished as string | undefined
         return (dateB ? new Date(dateB).getTime() : 0) - (dateA ? new Date(dateA).getTime() : 0)
       })
-      .slice(0, options.limit)
 
-    if (pages.length === 0) return null
+    const displayedPages = options.limit ? pages.slice(0, options.limit) : pages
+
+    if (displayedPages.length === 0) return null
 
     return (
       <div class={options.className}>
         {options.title && <h2 class="garden-title">{options.title}</h2>}
         <div class="folder-grid" style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem" }}>
-          {pages.map((page) => {
+          {displayedPages.map((page) => {
             const fm = (page.frontmatter ?? {}) as Record<string, any>
             const targetLink = (fm.link || fm.url || `/${page.slug}`) as string
             const imageUrl = fm.image || fm.coverUrl
@@ -88,36 +98,12 @@ export default ((opts?: BookGridOptions) => {
   }
 
   Component.css = `
-.book-grid .grid-card {
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-}
-.book-grid .card-image {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 6px;
-  border: 1px solid var(--lightgray);
-}
-.book-grid .card-image img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.book-grid .card-content {
-  padding-top: 0.5rem;
-}
-.book-grid .card-content h3 {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.3;
-}
-.book-grid .card-author {
-  margin: 0.15rem 0 0;
-  font-size: 0.8rem;
-  color: var(--gray);
-}
+.book-grid .grid-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+.book-grid .card-image { width: 100%; overflow: hidden; border-radius: 6px; border: 1px solid var(--lightgray); }
+.book-grid .card-image img { width: 100%; height: auto; display: block; }
+.book-grid .card-content { padding-top: 0.5rem; }
+.book-grid .card-content h3 { margin: 0; font-size: 0.9rem; line-height: 1.3; }
+.book-grid .card-author { margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--gray); }
 `
 
   return Component

@@ -1,2 +1,2 @@
-export { _ as BookGrid } from '../index-DBFPOm6m.js';
+export { _ as BookGrid } from '../index-BQoOcJfb.js';
 import '@quartz-community/types';

@@ -2,6 +2,7 @@ import { QuartzComponent } from '@quartz-community/types';
 
 type BookStatus = "to-read" | "reading" | "finished";
 
+type BookGridContext = "home" | "folderPage";
 interface BookGridOptions {
     folder?: string;
     status?: BookStatus;
@@ -9,7 +10,7 @@ interface BookGridOptions {
     limit?: number;
     coverWidth?: number;
     className?: string;
-    restrictToHome?: boolean;
+    restrictTo?: BookGridContext[];
 }
 declare const _default: (opts?: BookGridOptions) => QuartzComponent;
 

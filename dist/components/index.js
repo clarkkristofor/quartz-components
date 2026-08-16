@@ -42,14 +42,18 @@ var defaultOptions = {
   limit: 6,
   coverWidth: 150,
   className: "book-grid",
-  restrictToHome: true
+  restrictTo: ["home"]
 };
 var BookGrid_default = ((opts) => {
   const options = { ...defaultOptions, ...opts };
   const Component = (props) => {
     const slug = props.fileData.slug ?? "";
     const isHome = slug === "index" || slug === "" || slug === "/";
-    if (options.restrictToHome && !isHome) return null;
+    const isFolderIndex = slug === `${options.folder}/index`;
+    if (options.restrictTo.length > 0) {
+      const contextMatches = options.restrictTo.includes("home") && isHome || options.restrictTo.includes("folderPage") && isFolderIndex;
+      if (!contextMatches) return null;
+    }
     const folder = options.folder;
     const pages = props.allFiles.filter((page) => {
       const pslug = page.slug ?? "";
@@ -60,11 +64,12 @@ var BookGrid_default = ((opts) => {
       const dateA = a2.frontmatter?.date_finished;
       const dateB = b2.frontmatter?.date_finished;
       return (dateB ? new Date(dateB).getTime() : 0) - (dateA ? new Date(dateA).getTime() : 0);
-    }).slice(0, options.limit);
-    if (pages.length === 0) return null;
+    });
+    const displayedPages = options.limit ? pages.slice(0, options.limit) : pages;
+    if (displayedPages.length === 0) return null;
     return /* @__PURE__ */ u2("div", { class: options.className, children: [
       options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
-      /* @__PURE__ */ u2("div", { class: "folder-grid", style: { display: "flex", flexWrap: "wrap", gap: "1.25rem" }, children: pages.map((page) => {
+      /* @__PURE__ */ u2("div", { class: "folder-grid", style: { display: "flex", flexWrap: "wrap", gap: "1.25rem" }, children: displayedPages.map((page) => {
         const fm = page.frontmatter ?? {};
         const targetLink = fm.link || fm.url || `/${page.slug}`;
         const imageUrl = fm.image || fm.coverUrl;
@@ -94,36 +99,12 @@ var BookGrid_default = ((opts) => {
     ] });
   };
   Component.css = `
-.book-grid .grid-card {
-  display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-}
-.book-grid .card-image {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 6px;
-  border: 1px solid var(--lightgray);
-}
-.book-grid .card-image img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.book-grid .card-content {
-  padding-top: 0.5rem;
-}
-.book-grid .card-content h3 {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.3;
-}
-.book-grid .card-author {
-  margin: 0.15rem 0 0;
-  font-size: 0.8rem;
-  color: var(--gray);
-}
+.book-grid .grid-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+.book-grid .card-image { width: 100%; overflow: hidden; border-radius: 6px; border: 1px solid var(--lightgray); }
+.book-grid .card-image img { width: 100%; height: auto; display: block; }
+.book-grid .card-content { padding-top: 0.5rem; }
+.book-grid .card-content h3 { margin: 0; font-size: 0.9rem; line-height: 1.3; }
+.book-grid .card-author { margin: 0.15rem 0 0; font-size: 0.8rem; color: var(--gray); }
 `;
   return Component;
 });

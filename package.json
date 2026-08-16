@@ -117,7 +117,7 @@
     "components": {
       "BookGrid": {
         "displayName": "Book Grid",
-        "defaultPosition": "beforeBody",
+        "defaultPosition": "afterBody",
         "defaultPriority": 25
       }
     }
