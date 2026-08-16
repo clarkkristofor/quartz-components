@@ -7,7 +7,7 @@ interface BookGridOptions {
     status?: BookStatus;
     title?: string;
     limit?: number;
-    columns?: number;
+    coverWidth?: number;
     className?: string;
     restrictToHome?: boolean;
 }

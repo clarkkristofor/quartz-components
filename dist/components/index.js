@@ -40,7 +40,7 @@ var defaultOptions = {
   status: "finished",
   title: "",
   limit: 6,
-  columns: 3,
+  coverWidth: 150,
   className: "book-grid",
   restrictToHome: true
 };
@@ -64,66 +64,65 @@ var BookGrid_default = ((opts) => {
     if (pages.length === 0) return null;
     return /* @__PURE__ */ u2("div", { class: options.className, children: [
       options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
-      /* @__PURE__ */ u2(
-        "div",
-        {
-          class: "folder-grid",
-          style: { display: "grid", gridTemplateColumns: `repeat(${options.columns}, 1fr)`, gap: "1.25rem" },
-          children: pages.map((page) => {
-            const fm = page.frontmatter ?? {};
-            const targetLink = fm.link || fm.url || `/${page.slug}`;
-            const imageUrl = fm.image || fm.coverUrl;
-            const isExternal = targetLink.startsWith("http");
-            return /* @__PURE__ */ u2(
-              "a",
-              {
-                href: targetLink,
-                class: "grid-card",
-                target: isExternal ? "_blank" : "_self",
-                rel: isExternal ? "noopener noreferrer" : "",
-                children: [
-                  imageUrl && /* @__PURE__ */ u2("div", { class: "card-image", children: /* @__PURE__ */ u2("img", { src: imageUrl, alt: "" }) }),
-                  /* @__PURE__ */ u2("div", { class: "card-content", children: [
-                    /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
-                    fm.description && /* @__PURE__ */ u2("p", { children: fm.description })
-                  ] })
-                ]
-              },
-              page.slug
-            );
-          })
-        }
-      )
+      /* @__PURE__ */ u2("div", { class: "folder-grid", style: { display: "flex", flexWrap: "wrap", gap: "1.25rem" }, children: pages.map((page) => {
+        const fm = page.frontmatter ?? {};
+        const targetLink = fm.link || fm.url || `/${page.slug}`;
+        const imageUrl = fm.image || fm.coverUrl;
+        const isExternal = targetLink.startsWith("http");
+        const author = fm.author || fm.authors;
+        const authorText = Array.isArray(author) ? author.join(", ") : author;
+        return /* @__PURE__ */ u2(
+          "a",
+          {
+            href: targetLink,
+            class: "grid-card",
+            title: fm.description ?? "",
+            target: isExternal ? "_blank" : "_self",
+            rel: isExternal ? "noopener noreferrer" : "",
+            style: { width: `${options.coverWidth}px` },
+            children: [
+              imageUrl && /* @__PURE__ */ u2("div", { class: "card-image", children: /* @__PURE__ */ u2("img", { src: imageUrl, alt: "" }) }),
+              /* @__PURE__ */ u2("div", { class: "card-content", children: [
+                /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
+                authorText && /* @__PURE__ */ u2("p", { class: "card-author", children: authorText })
+              ] })
+            ]
+          },
+          page.slug
+        );
+      }) })
     ] });
   };
   Component.css = `
 .book-grid .grid-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--lightgray);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--light);
   text-decoration: none;
   color: inherit;
 }
 .book-grid .card-image {
   width: 100%;
-  aspect-ratio: 2 / 3;
   overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid var(--lightgray);
 }
 .book-grid .card-image img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   display: block;
 }
 .book-grid .card-content {
-  padding: 0.75rem;
+  padding-top: 0.5rem;
 }
 .book-grid .card-content h3 {
-  margin: 0 0 0.25rem;
-  font-size: 1rem;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+.book-grid .card-author {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--gray);
 }
 `;
   return Component;

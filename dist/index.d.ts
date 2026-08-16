@@ -1,7 +1,8 @@
-import { _ as _default } from './index-60n7f62i.js';
-export { B as BookGridOptions } from './index-60n7f62i.js';
+import { QuartzComponent } from '@quartz-community/types';
 export { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from '@quartz-community/types';
+export { B as BookGridOptions } from './index-DBFPOm6m.js';
 
+declare function init(options?: Record<string, unknown>): void;
+declare const BookGrid: QuartzComponent;
 
-
-export { _default as BookGrid, _default as default };
+export { BookGrid, BookGrid as default, init };
