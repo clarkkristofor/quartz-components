@@ -112,6 +112,117 @@ var BookGrid_default = ((opts) => {
   return Component;
 });
 
-export { BookGrid_default as BookGrid };
+// src/components/NoteList.tsx
+var defaultOptions2 = {
+  folder: "blog",
+  sectionTitle: "",
+  sectionLink: "",
+  title: "",
+  limit: 0,
+  className: "note-list",
+  restrictTo: ["home"]
+};
+var MusicIcon = () => /* @__PURE__ */ u2("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", class: "list-icon", children: [
+  /* @__PURE__ */ u2("path", { d: "M9 18V5l12-2v13" }),
+  /* @__PURE__ */ u2("circle", { cx: "6", cy: "18", r: "3" }),
+  /* @__PURE__ */ u2("circle", { cx: "18", cy: "16", r: "3" })
+] });
+var NoteIcon = () => /* @__PURE__ */ u2("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", class: "list-icon", children: /* @__PURE__ */ u2("path", { d: "M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" }) });
+var NoteList_default = ((opts) => {
+  const options = { ...defaultOptions2, ...opts };
+  const Component = (props) => {
+    const slug = props.fileData.slug ?? "";
+    const isHome = slug === "index" || slug === "" || slug === "/";
+    const isFolderIndex = slug === `${options.folder}/index`;
+    if (options.restrictTo.length > 0) {
+      const contextMatches = options.restrictTo.includes("home") && isHome || options.restrictTo.includes("folderPage") && isFolderIndex;
+      if (!contextMatches) return null;
+    }
+    const folder = options.folder;
+    const pages = props.allFiles.filter((page) => {
+      const pslug = page.slug ?? "";
+      const isDirectChild = pslug.split("/").length === folder.split("/").length + 1;
+      return pslug.startsWith(folder + "/") && !pslug.endsWith("index") && isDirectChild;
+    }).sort((a2, b2) => {
+      const dateA = a2.frontmatter?.date;
+      const dateB = b2.frontmatter?.date;
+      return (dateB ? new Date(dateB).getTime() : 0) - (dateA ? new Date(dateA).getTime() : 0);
+    });
+    const displayedPages = options.limit ? pages.slice(0, options.limit) : pages;
+    if (displayedPages.length === 0) return null;
+    const isMusic = folder === "music";
+    return /* @__PURE__ */ u2("div", { class: options.className, children: [
+      options.sectionTitle && /* @__PURE__ */ u2("h1", { id: options.sectionTitle.toLowerCase(), children: /* @__PURE__ */ u2("a", { href: options.sectionLink, class: "internal internal-link alias", children: options.sectionTitle }) }),
+      options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
+      /* @__PURE__ */ u2("div", { class: "simple-list", children: displayedPages.map((page) => {
+        const fm = page.frontmatter ?? {};
+        const description = fm.description;
+        const rawDate = fm.date;
+        return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "grid-card list-item-card", children: [
+          /* @__PURE__ */ u2("div", { class: "card-icon-wrapper", children: isMusic ? /* @__PURE__ */ u2(MusicIcon, {}) : /* @__PURE__ */ u2(NoteIcon, {}) }),
+          /* @__PURE__ */ u2("div", { class: "card-content", children: [
+            /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
+            /* @__PURE__ */ u2("div", { class: "card-metadata", children: [
+              description && /* @__PURE__ */ u2("span", { class: "card-desc", children: description }),
+              description && rawDate && /* @__PURE__ */ u2("span", { class: "meta-separator", children: " \u2022 " }),
+              rawDate && /* @__PURE__ */ u2("span", { class: "card-date", children: new Date(rawDate).toLocaleDateString() })
+            ] })
+          ] })
+        ] }, page.slug);
+      }) })
+    ] });
+  };
+  return Component;
+});
+
+// src/components/index.ts
+var BookGridReadingNow = BookGrid_default({
+  folder: "books",
+  status: "reading",
+  sectionTitle: "Books",
+  sectionLink: "/books/",
+  title: "Reading Now",
+  limit: 5,
+  className: "book-grid",
+  restrictTo: ["home"]
+});
+var BookGridRead = BookGrid_default({
+  folder: "books",
+  status: "finished",
+  title: "Read",
+  limit: 0,
+  className: "book-grid",
+  restrictTo: ["folderPage"]
+});
+var NoteListMusicHome = NoteList_default({
+  folder: "music",
+  sectionTitle: "Music",
+  sectionLink: "/music/",
+  limit: 3,
+  restrictTo: ["home"]
+});
+var NoteListBlogHome = NoteList_default({
+  folder: "blog",
+  sectionTitle: "Blog",
+  sectionLink: "/blog/",
+  limit: 3,
+  restrictTo: ["home"]
+});
+var NoteListMusicArchive = NoteList_default({
+  folder: "music",
+  sectionTitle: "Music",
+  sectionLink: "/music/",
+  limit: 0,
+  restrictTo: ["folderPage"]
+});
+var NoteListBlogArchive = NoteList_default({
+  folder: "blog",
+  sectionTitle: "Blog",
+  sectionLink: "/blog/",
+  limit: 0,
+  restrictTo: ["folderPage"]
+});
+
+export { BookGridRead, BookGridReadingNow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

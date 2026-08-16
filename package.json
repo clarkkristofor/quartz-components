@@ -115,11 +115,12 @@
       "restrictToHome": true
     },
     "components": {
-      "BookGrid": {
-        "displayName": "Book Grid",
-        "defaultPosition": "afterBody",
-        "defaultPriority": 25
-      }
+      "BookGridReadingNow": { "displayName": "Book Grid — Reading Now", "defaultPosition": "afterBody", "defaultPriority": 25 },
+      "BookGridRead": { "displayName": "Book Grid — Read", "defaultPosition": "afterBody", "defaultPriority": 25 },
+      "NoteListMusicHome": { "displayName": "Note List — Music Home", "defaultPosition": "afterBody", "defaultPriority": 25 },
+      "NoteListBlogHome": { "displayName": "Note List — Blog Home", "defaultPosition": "afterBody", "defaultPriority": 25 },
+      "NoteListMusicArchive": { "displayName": "Note List — Music Archive", "defaultPosition": "afterBody", "defaultPriority": 25 },
+      "NoteListBlogArchive": { "displayName": "Note List — Blog Archive", "defaultPosition": "afterBody", "defaultPriority": 25 }
     }
   },
   "engines": {
