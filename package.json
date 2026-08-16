@@ -96,25 +96,23 @@
     "vitest": "^2.1.9",
     "@changesets/cli": "^2.29.0"
   },
-  "quartz": {
-    "name": "plugin-template",
-    "displayName": "Plugin Template",
-    "category": "transformer",
+ "quartz": {
+    "name": "quartz-components",
+    "displayName": "Book Grid",
+    "category": "component",
     "version": "1.0.0",
     "quartzVersion": ">=5.0.0",
     "dependencies": [],
     "defaultOrder": 50,
     "defaultEnabled": true,
-    "defaultOptions": {},
-    "optionSchema": {
-      "highlightToken": {
-        "type": "enum",
-        "values": [
-          "==",
-          "**",
-          "~~"
-        ]
-      }
+    "defaultOptions": {
+      "folder": "books",
+      "status": "finished",
+      "title": "",
+      "limit": 6,
+      "columns": 3,
+      "className": "book-grid",
+      "restrictToHome": true
     },
     "components": {
       "BookGrid": {

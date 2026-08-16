@@ -129,6 +129,9 @@ var BookGrid_default = ((opts) => {
   return Component;
 });
 
-export { BookGrid_default as BookGrid };
+// src/index.ts
+var src_default = BookGrid_default;
+
+export { BookGrid_default as BookGrid, src_default as default };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map
