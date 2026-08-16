@@ -11,7 +11,9 @@ export type BookGridContext = "home" | "folderPage"
 export interface BookGridOptions {
   folder?: string
   status?: BookStatus
-  title?: string
+  sectionTitle?: string   // NEW — renders the linked <h1>, e.g. "Books"
+  sectionLink?: string    // NEW — href for sectionTitle
+  title?: string          // now a plain, unlinked <h2> subtitle, e.g. "Reading Now"
   limit?: number
   coverWidth?: number
   className?: string
@@ -21,6 +23,8 @@ export interface BookGridOptions {
 const defaultOptions: Required<BookGridOptions> = {
   folder: "books",
   status: "finished",
+  sectionTitle: "",
+  sectionLink: "",
   title: "",
   limit: 6,
   coverWidth: 150,
@@ -63,6 +67,13 @@ export default ((opts?: BookGridOptions) => {
 
     return (
       <div class={options.className}>
+        {options.sectionTitle && (
+          <h1 id={options.sectionTitle.toLowerCase()}>
+            <a href={options.sectionLink} class="internal internal-link alias">
+              {options.sectionTitle}
+            </a>
+          </h1>
+        )}
         {options.title && <h2 class="garden-title">{options.title}</h2>}
         <div class="folder-grid" style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem" }}>
           {displayedPages.map((page) => {
@@ -99,7 +110,7 @@ export default ((opts?: BookGridOptions) => {
 
   Component.css = `
 .book-grid .grid-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
-.book-grid .card-image { width: 100%; overflow: hidden; border-radius: 6px; border: 1px solid var(--lightgray); }
+.book-grid .card-image { width: 100%; overflow: hidden; }
 .book-grid .card-image img { width: 100%; height: auto; display: block; }
 .book-grid .card-content { padding-top: 0.5rem; }
 .book-grid .card-content h3 { margin: 0; font-size: 0.9rem; line-height: 1.3; }

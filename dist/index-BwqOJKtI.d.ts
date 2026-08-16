@@ -6,6 +6,8 @@ type BookGridContext = "home" | "folderPage";
 interface BookGridOptions {
     folder?: string;
     status?: BookStatus;
+    sectionTitle?: string;
+    sectionLink?: string;
     title?: string;
     limit?: number;
     coverWidth?: number;

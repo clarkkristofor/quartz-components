@@ -38,6 +38,8 @@ function u2(e2, t2, n2, o2, i2, u3) {
 var defaultOptions = {
   folder: "books",
   status: "finished",
+  sectionTitle: "",
+  sectionLink: "",
   title: "",
   limit: 6,
   coverWidth: 150,
@@ -68,6 +70,7 @@ var BookGrid_default = ((opts) => {
     const displayedPages = options.limit ? pages.slice(0, options.limit) : pages;
     if (displayedPages.length === 0) return null;
     return /* @__PURE__ */ u2("div", { class: options.className, children: [
+      options.sectionTitle && /* @__PURE__ */ u2("h1", { id: options.sectionTitle.toLowerCase(), children: /* @__PURE__ */ u2("a", { href: options.sectionLink, class: "internal internal-link alias", children: options.sectionTitle }) }),
       options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
       /* @__PURE__ */ u2("div", { class: "folder-grid", style: { display: "flex", flexWrap: "wrap", gap: "1.25rem" }, children: displayedPages.map((page) => {
         const fm = page.frontmatter ?? {};
@@ -100,7 +103,7 @@ var BookGrid_default = ((opts) => {
   };
   Component.css = `
 .book-grid .grid-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
-.book-grid .card-image { width: 100%; overflow: hidden; border-radius: 6px; border: 1px solid var(--lightgray); }
+.book-grid .card-image { width: 100%; overflow: hidden; }
 .book-grid .card-image img { width: 100%; height: auto; display: block; }
 .book-grid .card-content { padding-top: 0.5rem; }
 .book-grid .card-content h3 { margin: 0; font-size: 0.9rem; line-height: 1.3; }
