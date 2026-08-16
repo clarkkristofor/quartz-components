@@ -1,10 +1,16 @@
 import { QuartzComponent } from '@quartz-community/types';
 
-interface ExampleComponentOptions {
-    prefix?: string;
-    suffix?: string;
-    className?: string;
-}
-declare const _default: (opts?: ExampleComponentOptions) => QuartzComponent;
+type BookStatus = "to-read" | "reading" | "finished";
 
-export { _default as ExampleComponent, type ExampleComponentOptions };
+interface BookGridOptions {
+    folder?: string;
+    status?: BookStatus;
+    title?: string;
+    limit?: number;
+    columns?: number;
+    className?: string;
+    restrictToHome?: boolean;
+}
+declare const _default: (opts?: BookGridOptions) => QuartzComponent;
+
+export { type BookGridOptions as B, _default as BookGrid };

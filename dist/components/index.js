@@ -2,16 +2,17 @@ import { createRequire } from 'module';
 
 createRequire(import.meta.url);
 
-// node_modules/@quartz-community/utils/dist/lang.js
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+// src/util/bookStatus.ts
+function getBookStatus(frontmatter) {
+  const raw = frontmatter?.date_finished;
+  if (!raw) return "to-read";
+  const finishedDate = new Date(raw);
+  if (isNaN(finishedDate.getTime())) return "to-read";
+  const today = /* @__PURE__ */ new Date();
+  today.setHours(0, 0, 0, 0);
+  finishedDate.setHours(0, 0, 0, 0);
+  return finishedDate.getTime() > today.getTime() ? "reading" : "finished";
 }
-
-// src/components/styles/example.scss
-var example_default = ".example-component {\n  padding: 8px 16px;\n  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n  color: white;\n  border-radius: 4px;\n  font-weight: 600;\n  display: inline-block;\n}";
-
-// src/components/scripts/example.inline.ts
-var example_inline_default = 'function l(){let e=window.location.pathname;return e.startsWith("/")&&(e=e.slice(1)),e.endsWith("/")&&(e=e.slice(0,-1)),e||"index"}function r(){let e=document.querySelectorAll(".example-component");if(e.length===0)return;let t=[];function o(n){(n.ctrlKey||n.metaKey)&&n.shiftKey&&n.key.toLowerCase()==="e"&&(n.preventDefault(),console.log("[ExampleComponent] Keyboard shortcut triggered!"))}document.addEventListener("keydown",o),t.push(()=>document.removeEventListener("keydown",o));for(let n of e){let i=()=>{console.log("[ExampleComponent] Clicked!")};n.addEventListener("click",i),t.push(()=>n.removeEventListener("click",i))}typeof window<"u"&&window.addCleanup&&window.addCleanup(()=>{t.forEach(n=>n())}),console.log("[ExampleComponent] Initialized with",e.length,"component(s)")}document.addEventListener("nav",e=>{let t=e.detail?.url||l();console.log("[ExampleComponent] Navigation to:",t),r()});document.addEventListener("render",()=>{console.log("[ExampleComponent] Render event - re-initializing"),r()});document.addEventListener("prenav",()=>{let e=document.querySelector(".example-component");e&&sessionStorage.setItem("exampleScrollTop",e.scrollTop?.toString()||"0")});\n';
 var l;
 l = { __e: function(n2, l2, u3, t2) {
   for (var i2, r2, o2; l2 = l2.__; ) if ((i2 = l2.__c) && !i2.__) try {
@@ -29,23 +30,105 @@ function u2(e2, t2, n2, o2, i2, u3) {
   var a2, c2, p2 = t2;
   if ("ref" in p2) for (c2 in p2 = {}, t2) "ref" == c2 ? a2 = t2[c2] : p2[c2] = t2[c2];
   var l2 = { type: e2, props: p2, key: n2, ref: a2, __k: null, __: null, __b: 0, __e: null, __c: null, constructor: void 0, __v: --f2, __i: -1, __u: 0, __source: i2, __self: u3 };
+  if ("function" == typeof e2 && (a2 = e2.defaultProps)) for (c2 in a2) void 0 === p2[c2] && (p2[c2] = a2[c2]);
   return l.vnode && l.vnode(l2), l2;
 }
 
-// src/components/ExampleComponent.tsx
-var ExampleComponent_default = ((opts) => {
-  const { prefix = "", suffix = "", className = "example-component" } = opts ?? {};
+// src/components/BookGrid.tsx
+var defaultOptions = {
+  folder: "books",
+  status: "finished",
+  title: "",
+  limit: 6,
+  columns: 3,
+  className: "book-grid",
+  restrictToHome: true
+};
+var BookGrid_default = ((opts) => {
+  const options = { ...defaultOptions, ...opts };
   const Component = (props) => {
-    const frontmatter = props.fileData?.frontmatter;
-    const title = frontmatter?.title ?? "Untitled";
-    const fullText = `${prefix}${title}${suffix}`;
-    return /* @__PURE__ */ u2("div", { class: classNames(className), children: fullText });
+    const slug = props.fileData.slug ?? "";
+    const isHome = slug === "index" || slug === "" || slug === "/";
+    if (options.restrictToHome && !isHome) return null;
+    const folder = options.folder;
+    const pages = props.allFiles.filter((page) => {
+      const pslug = page.slug ?? "";
+      const isDirectChild = pslug.split("/").length === folder.split("/").length + 1;
+      if (!pslug.startsWith(folder + "/") || pslug.endsWith("index") || !isDirectChild) return false;
+      return getBookStatus(page.frontmatter) === options.status;
+    }).sort((a2, b2) => {
+      const dateA = a2.frontmatter?.date_finished;
+      const dateB = b2.frontmatter?.date_finished;
+      return (dateB ? new Date(dateB).getTime() : 0) - (dateA ? new Date(dateA).getTime() : 0);
+    }).slice(0, options.limit);
+    if (pages.length === 0) return null;
+    return /* @__PURE__ */ u2("div", { class: options.className, children: [
+      options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
+      /* @__PURE__ */ u2(
+        "div",
+        {
+          class: "folder-grid",
+          style: { display: "grid", gridTemplateColumns: `repeat(${options.columns}, 1fr)`, gap: "1.25rem" },
+          children: pages.map((page) => {
+            const fm = page.frontmatter ?? {};
+            const targetLink = fm.link || fm.url || `/${page.slug}`;
+            const imageUrl = fm.image || fm.coverUrl;
+            const isExternal = targetLink.startsWith("http");
+            return /* @__PURE__ */ u2(
+              "a",
+              {
+                href: targetLink,
+                class: "grid-card",
+                target: isExternal ? "_blank" : "_self",
+                rel: isExternal ? "noopener noreferrer" : "",
+                children: [
+                  imageUrl && /* @__PURE__ */ u2("div", { class: "card-image", children: /* @__PURE__ */ u2("img", { src: imageUrl, alt: "" }) }),
+                  /* @__PURE__ */ u2("div", { class: "card-content", children: [
+                    /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
+                    fm.description && /* @__PURE__ */ u2("p", { children: fm.description })
+                  ] })
+                ]
+              },
+              page.slug
+            );
+          })
+        }
+      )
+    ] });
   };
-  Component.css = example_default;
-  Component.afterDOMLoaded = example_inline_default;
+  Component.css = `
+.book-grid .grid-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--lightgray);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--light);
+  text-decoration: none;
+  color: inherit;
+}
+.book-grid .card-image {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+}
+.book-grid .card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.book-grid .card-content {
+  padding: 0.75rem;
+}
+.book-grid .card-content h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+`;
   return Component;
 });
 
-export { ExampleComponent_default as ExampleComponent };
+export { BookGrid_default as BookGrid };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

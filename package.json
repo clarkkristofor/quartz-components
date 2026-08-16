@@ -117,10 +117,10 @@
       }
     },
     "components": {
-      "ExampleComponent": {
-        "displayName": "Example Component",
-        "defaultPosition": "right",
-        "defaultPriority": 50
+      "BookGrid": {
+        "displayName": "Book Grid",
+        "defaultPosition": "beforeBody",
+        "defaultPriority": 25
       }
     }
   },
