@@ -1,14 +1,8 @@
-import createBookGrid from "./components/BookGrid"
-import createNoteList from "./components/NoteList"
-import type { BookGridOptions } from "./components/BookGrid"
-import type { NoteListOptions } from "./components/NoteList"
-
-export const BookGrid = createBookGrid
-export const NoteList = createNoteList
+// src/index.ts
+export * from "./components"
 
 export type { BookGridOptions } from "./components/BookGrid"
 export type { NoteListOptions } from "./components/NoteList"
-
 export type {
   QuartzComponent,
   QuartzComponentProps,

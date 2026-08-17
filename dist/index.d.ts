@@ -1,4 +1,4 @@
-import * as _quartz_community_types from '@quartz-community/types';
+export { BookGridRead, BookGridReadingNow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome } from './components/index.js';
 export { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from '@quartz-community/types';
 
 type BookStatus = "to-read" | "reading" | "finished";
@@ -27,7 +27,4 @@ interface NoteListOptions {
     restrictTo?: NoteListContext[];
 }
 
-declare const BookGrid: (opts?: BookGridOptions) => _quartz_community_types.QuartzComponent;
-declare const NoteList: (opts?: NoteListOptions) => _quartz_community_types.QuartzComponent;
-
-export { BookGrid, type BookGridOptions, NoteList, type NoteListOptions };
+export type { BookGridOptions, NoteListOptions };

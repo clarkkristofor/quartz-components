@@ -175,10 +175,54 @@ var NoteList_default = ((opts) => {
   return Component;
 });
 
-// src/index.ts
-var BookGrid = BookGrid_default;
-var NoteList = NoteList_default;
+// src/components/index.ts
+var BookGridReadingNow = BookGrid_default({
+  folder: "books",
+  status: "reading",
+  sectionTitle: "Books",
+  sectionLink: "/books/",
+  title: "Reading Now",
+  limit: 5,
+  className: "book-grid",
+  restrictTo: ["home"]
+});
+var BookGridRead = BookGrid_default({
+  folder: "books",
+  status: "finished",
+  title: "Read",
+  limit: 0,
+  className: "book-grid",
+  restrictTo: ["folderPage"]
+});
+var NoteListMusicHome = NoteList_default({
+  folder: "music",
+  sectionTitle: "Music",
+  sectionLink: "/music/",
+  limit: 3,
+  restrictTo: ["home"]
+});
+var NoteListBlogHome = NoteList_default({
+  folder: "blog",
+  sectionTitle: "Blog",
+  sectionLink: "/blog/",
+  limit: 3,
+  restrictTo: ["home"]
+});
+var NoteListMusicArchive = NoteList_default({
+  folder: "music",
+  sectionTitle: "Music",
+  sectionLink: "/music/",
+  limit: 0,
+  restrictTo: ["folderPage"]
+});
+var NoteListBlogArchive = NoteList_default({
+  folder: "blog",
+  sectionTitle: "Blog",
+  sectionLink: "/blog/",
+  limit: 0,
+  restrictTo: ["folderPage"]
+});
 
-export { BookGrid, NoteList };
+export { BookGridRead, BookGridReadingNow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map
