@@ -86,23 +86,26 @@ export default ((opts?: NoteListOptions) => {
         <div class="simple-list">
           {displayedPages.map((page) => {
             const fm = (page.frontmatter ?? {}) as Record<string, any>
-            const description = fm.description as string | undefined
+            const description = (page as any).description ?? fm.description as string | undefined
             const rawDate = fm.date as string | undefined
+            const formattedDate = rawDate
+                ? new Date(rawDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+                : undefined
 
             return (
-              <a href={`/${page.slug}`} class="grid-card list-item-card" key={page.slug}>
-                <div class="card-icon-wrapper">
-                  {isMusic ? <MusicIcon /> : <NoteIcon />}
-                </div>
-                <div class="card-content">
-                  <h3>{fm.title ?? page.slug?.split("/").pop() ?? "Untitled"}</h3>
-                  <div class="card-metadata">
-                    {description && <span class="card-desc">{description}</span>}
-                    {description && rawDate && <span class="meta-separator"> • </span>}
-                    {rawDate && <span class="card-date">{new Date(rawDate).toLocaleDateString()}</span>}
-                  </div>
-                </div>
-              </a>
+                <a href={`/${page.slug}`} class="grid-card list-item-card" key={page.slug}>
+                    <div class="card-icon-wrapper">
+                    {isMusic ? <MusicIcon /> : <NoteIcon />}
+                    </div>
+                    <div class="card-content">
+                    <h3>{fm.title ?? page.slug?.split("/").pop() ?? "Untitled"}</h3>
+                    <div class="card-metadata">
+                        {description && <span class="card-desc">{description}</span>}
+                        {description && formattedDate && <span class="meta-separator"> • </span>}
+                        {formattedDate && <span class="card-date">{formattedDate}</span>}
+                    </div>
+                    </div>
+                </a>
             )
           })}
         </div>

@@ -156,16 +156,17 @@ var NoteList_default = ((opts) => {
       options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
       /* @__PURE__ */ u2("div", { class: "simple-list", children: displayedPages.map((page) => {
         const fm = page.frontmatter ?? {};
-        const description = fm.description;
+        const description = page.description ?? fm.description;
         const rawDate = fm.date;
+        const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) : void 0;
         return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "grid-card list-item-card", children: [
           /* @__PURE__ */ u2("div", { class: "card-icon-wrapper", children: isMusic ? /* @__PURE__ */ u2(MusicIcon, {}) : /* @__PURE__ */ u2(NoteIcon, {}) }),
           /* @__PURE__ */ u2("div", { class: "card-content", children: [
             /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
             /* @__PURE__ */ u2("div", { class: "card-metadata", children: [
               description && /* @__PURE__ */ u2("span", { class: "card-desc", children: description }),
-              description && rawDate && /* @__PURE__ */ u2("span", { class: "meta-separator", children: " \u2022 " }),
-              rawDate && /* @__PURE__ */ u2("span", { class: "card-date", children: new Date(rawDate).toLocaleDateString() })
+              description && formattedDate && /* @__PURE__ */ u2("span", { class: "meta-separator", children: " \u2022 " }),
+              formattedDate && /* @__PURE__ */ u2("span", { class: "card-date", children: formattedDate })
             ] })
           ] })
         ] }, page.slug);
