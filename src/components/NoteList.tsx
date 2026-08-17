@@ -46,11 +46,11 @@ export default ((opts?: NoteListOptions) => {
     const isHome = slug === "index" || slug === "" || slug === "/"
     const isFolderIndex = slug === `${options.folder}/index`
 
+    let matchedContext: NoteListContext | null = null
     if (options.restrictTo.length > 0) {
-      const contextMatches =
-        (options.restrictTo.includes("home") && isHome) ||
-        (options.restrictTo.includes("folderPage") && isFolderIndex)
-      if (!contextMatches) return null
+      if (options.restrictTo.includes("home") && isHome) matchedContext = "home"
+      else if (options.restrictTo.includes("folderPage") && isFolderIndex) matchedContext = "folderPage"
+      else return null
     }
 
     const folder = options.folder
@@ -74,7 +74,7 @@ export default ((opts?: NoteListOptions) => {
 
     return (
       <div class={options.className}>
-        {options.sectionTitle && (
+        {matchedContext === "home" && options.sectionTitle && (
           <h1 id={options.sectionTitle.toLowerCase()}>
             <a href={options.sectionLink} class="internal internal-link alias">
               {options.sectionTitle}
@@ -100,9 +100,9 @@ export default ((opts?: NoteListOptions) => {
                     <div class="card-content">
                     <h3>{fm.title ?? page.slug?.split("/").pop() ?? "Untitled"}</h3>
                     <div class="card-metadata">
-                        {description && <span class="card-desc">{description}</span>}
-                        {description && formattedDate && <span class="meta-separator"> • </span>}
                         {formattedDate && <span class="card-date">{formattedDate}</span>}
+                        {formattedDate && description && <span class="meta-separator"> • </span>}
+                        {description && <span class="card-desc">{description}</span>}
                     </div>
                     </div>
                 </a>

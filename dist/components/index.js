@@ -134,9 +134,11 @@ var NoteList_default = ((opts) => {
     const slug = props.fileData.slug ?? "";
     const isHome = slug === "index" || slug === "" || slug === "/";
     const isFolderIndex = slug === `${options.folder}/index`;
+    let matchedContext = null;
     if (options.restrictTo.length > 0) {
-      const contextMatches = options.restrictTo.includes("home") && isHome || options.restrictTo.includes("folderPage") && isFolderIndex;
-      if (!contextMatches) return null;
+      if (options.restrictTo.includes("home") && isHome) matchedContext = "home";
+      else if (options.restrictTo.includes("folderPage") && isFolderIndex) matchedContext = "folderPage";
+      else return null;
     }
     const folder = options.folder;
     const pages = props.allFiles.filter((page) => {
@@ -152,7 +154,7 @@ var NoteList_default = ((opts) => {
     if (displayedPages.length === 0) return null;
     const isMusic = folder === "music";
     return /* @__PURE__ */ u2("div", { class: options.className, children: [
-      options.sectionTitle && /* @__PURE__ */ u2("h1", { id: options.sectionTitle.toLowerCase(), children: /* @__PURE__ */ u2("a", { href: options.sectionLink, class: "internal internal-link alias", children: options.sectionTitle }) }),
+      matchedContext === "home" && options.sectionTitle && /* @__PURE__ */ u2("h1", { id: options.sectionTitle.toLowerCase(), children: /* @__PURE__ */ u2("a", { href: options.sectionLink, class: "internal internal-link alias", children: options.sectionTitle }) }),
       options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
       /* @__PURE__ */ u2("div", { class: "simple-list", children: displayedPages.map((page) => {
         const fm = page.frontmatter ?? {};
@@ -164,9 +166,9 @@ var NoteList_default = ((opts) => {
           /* @__PURE__ */ u2("div", { class: "card-content", children: [
             /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
             /* @__PURE__ */ u2("div", { class: "card-metadata", children: [
-              description && /* @__PURE__ */ u2("span", { class: "card-desc", children: description }),
-              description && formattedDate && /* @__PURE__ */ u2("span", { class: "meta-separator", children: " \u2022 " }),
-              formattedDate && /* @__PURE__ */ u2("span", { class: "card-date", children: formattedDate })
+              formattedDate && /* @__PURE__ */ u2("span", { class: "card-date", children: formattedDate }),
+              formattedDate && description && /* @__PURE__ */ u2("span", { class: "meta-separator", children: " \u2022 " }),
+              description && /* @__PURE__ */ u2("span", { class: "card-desc", children: description })
             ] })
           ] })
         ] }, page.slug);
@@ -175,6 +177,16 @@ var NoteList_default = ((opts) => {
   };
   return Component;
 });
+
+// src/components/HomeArchiveRow.tsx
+var HomeArchiveRow = ((props) => {
+  return /* @__PURE__ */ u2("div", { class: "home-archive-row", children: [
+    NoteListMusicHome(props),
+    NoteListBlogHome(props)
+  ] });
+});
+HomeArchiveRow.displayName = "HomeArchiveRow";
+var HomeArchiveRow_default = HomeArchiveRow;
 
 // src/components/index.ts
 function withDisplayName(fn, name) {
@@ -246,6 +258,6 @@ var NoteListBlogArchive = withDisplayName(
   "NoteListBlogArchive"
 );
 
-export { BookGridRead, BookGridReadingNow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome };
+export { BookGridRead, BookGridReadingNow, HomeArchiveRow_default as HomeArchiveRow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

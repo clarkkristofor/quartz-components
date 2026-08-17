@@ -1,4 +1,4 @@
-export { BookGridRead, BookGridReadingNow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome } from './components/index.js';
+export { BookGridRead, BookGridReadingNow, HomeArchiveRow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome } from './components/index.js';
 export { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from '@quartz-community/types';
 
 type BookStatus = "to-read" | "reading" | "finished";
