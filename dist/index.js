@@ -176,52 +176,74 @@ var NoteList_default = ((opts) => {
 });
 
 // src/components/index.ts
-var BookGridReadingNow = BookGrid_default({
-  folder: "books",
-  status: "reading",
-  sectionTitle: "Books",
-  sectionLink: "/books/",
-  title: "Reading Now",
-  limit: 5,
-  className: "book-grid",
-  restrictTo: ["home"]
-});
-var BookGridRead = BookGrid_default({
-  folder: "books",
-  status: "finished",
-  title: "Read",
-  limit: 0,
-  className: "book-grid",
-  restrictTo: ["folderPage"]
-});
-var NoteListMusicHome = NoteList_default({
-  folder: "music",
-  sectionTitle: "Music",
-  sectionLink: "/music/",
-  limit: 3,
-  restrictTo: ["home"]
-});
-var NoteListBlogHome = NoteList_default({
-  folder: "blog",
-  sectionTitle: "Blog",
-  sectionLink: "/blog/",
-  limit: 3,
-  restrictTo: ["home"]
-});
-var NoteListMusicArchive = NoteList_default({
-  folder: "music",
-  sectionTitle: "Music",
-  sectionLink: "/music/",
-  limit: 0,
-  restrictTo: ["folderPage"]
-});
-var NoteListBlogArchive = NoteList_default({
-  folder: "blog",
-  sectionTitle: "Blog",
-  sectionLink: "/blog/",
-  limit: 0,
-  restrictTo: ["folderPage"]
-});
+function withDisplayName(fn, name) {
+  fn.displayName = name;
+  return fn;
+}
+var BookGridReadingNow = withDisplayName(
+  BookGrid_default({
+    folder: "books",
+    status: "reading",
+    sectionTitle: "Books",
+    sectionLink: "/books/",
+    title: "Reading Now",
+    limit: 5,
+    className: "book-grid",
+    restrictTo: ["home"]
+  }),
+  "BookGridReadingNow"
+);
+var BookGridRead = withDisplayName(
+  BookGrid_default({
+    folder: "books",
+    status: "finished",
+    title: "Read",
+    limit: 0,
+    className: "book-grid",
+    restrictTo: ["folderPage"]
+  }),
+  "BookGridRead"
+);
+var NoteListMusicHome = withDisplayName(
+  NoteList_default({
+    folder: "music",
+    sectionTitle: "Music",
+    sectionLink: "/music/",
+    limit: 3,
+    restrictTo: ["home"]
+  }),
+  "NoteListMusicHome"
+);
+var NoteListBlogHome = withDisplayName(
+  NoteList_default({
+    folder: "blog",
+    sectionTitle: "Blog",
+    sectionLink: "/blog/",
+    limit: 3,
+    restrictTo: ["home"]
+  }),
+  "NoteListBlogHome"
+);
+var NoteListMusicArchive = withDisplayName(
+  NoteList_default({
+    folder: "music",
+    sectionTitle: "Music",
+    sectionLink: "/music/",
+    limit: 0,
+    restrictTo: ["folderPage"]
+  }),
+  "NoteListMusicArchive"
+);
+var NoteListBlogArchive = withDisplayName(
+  NoteList_default({
+    folder: "blog",
+    sectionTitle: "Blog",
+    sectionLink: "/blog/",
+    limit: 0,
+    restrictTo: ["folderPage"]
+  }),
+  "NoteListBlogArchive"
+);
 
 export { BookGridRead, BookGridReadingNow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome };
 //# sourceMappingURL=index.js.map
