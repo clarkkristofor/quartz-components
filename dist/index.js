@@ -49,9 +49,9 @@ var defaultOptions = {
 var BookGrid_default = ((opts) => {
   const options = { ...defaultOptions, ...opts };
   const Component = (props) => {
-    const slug = props.fileData.slug ?? "";
-    const isHome = slug === "index" || slug === "" || slug === "/";
-    const isFolderIndex = slug === `${options.folder}/index`;
+    const slug2 = props.fileData.slug ?? "";
+    const isHome = slug2 === "index" || slug2 === "" || slug2 === "/";
+    const isFolderIndex = slug2 === `${options.folder}/index`;
     if (options.restrictTo.length > 0) {
       const contextMatches = options.restrictTo.includes("home") && isHome || options.restrictTo.includes("folderPage") && isFolderIndex;
       if (!contextMatches) return null;
@@ -131,9 +131,9 @@ var NoteIcon = () => /* @__PURE__ */ u2("svg", { viewBox: "0 0 24 24", fill: "no
 var NoteList_default = ((opts) => {
   const options = { ...defaultOptions2, ...opts };
   const Component = (props) => {
-    const slug = props.fileData.slug ?? "";
-    const isHome = slug === "index" || slug === "" || slug === "/";
-    const isFolderIndex = slug === `${options.folder}/index`;
+    const slug2 = props.fileData.slug ?? "";
+    const isHome = slug2 === "index" || slug2 === "" || slug2 === "/";
+    const isFolderIndex = slug2 === `${options.folder}/index`;
     let matchedContext = null;
     if (options.restrictTo.length > 0) {
       if (options.restrictTo.includes("home") && isHome) matchedContext = "home";
@@ -168,6 +168,102 @@ var NoteList_default = ((opts) => {
             /* @__PURE__ */ u2("div", { class: "card-metadata", children: [
               formattedDate && /* @__PURE__ */ u2("span", { class: "card-date", children: formattedDate }),
               formattedDate && description && /* @__PURE__ */ u2("span", { class: "meta-separator", children: " \u2022 " }),
+              description && /* @__PURE__ */ u2("span", { class: "card-desc", children: description })
+            ] })
+          ] })
+        ] }, page.slug);
+      }) })
+    ] });
+  };
+  return Component;
+});
+
+// node_modules/@quartz-community/utils/dist/index.js
+function simplifySlug(fp) {
+  const res = stripSlashes(trimSuffix(fp, "index"));
+  return res.length === 0 ? "/" : res;
+}
+function endsWith(s2, suffix) {
+  return s2 === suffix || s2.endsWith("/" + suffix);
+}
+function trimSuffix(s2, suffix) {
+  if (endsWith(s2, suffix)) {
+    s2 = s2.slice(0, -suffix.length);
+  }
+  return s2;
+}
+function stripSlashes(s2, onlyStripPrefix) {
+  if (s2.startsWith("/")) {
+    s2 = s2.substring(1);
+  }
+  return s2;
+}
+
+// src/components/PopularNotes.tsx
+var defaultOptions3 = {
+  folder: "garden",
+  sectionTitle: "",
+  sectionLink: "",
+  title: "",
+  limit: 10,
+  showCount: true,
+  minLinks: 1,
+  className: "popular-notes",
+  restrictTo: ["home"]
+};
+var HubIcon = () => /* @__PURE__ */ u2("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", class: "list-icon", children: [
+  /* @__PURE__ */ u2("circle", { cx: "12", cy: "12", r: "3" }),
+  /* @__PURE__ */ u2("path", { d: "M12 2v4" }),
+  /* @__PURE__ */ u2("path", { d: "M12 18v4" }),
+  /* @__PURE__ */ u2("path", { d: "M4.93 4.93l2.83 2.83" }),
+  /* @__PURE__ */ u2("path", { d: "M16.24 16.24l2.83 2.83" }),
+  /* @__PURE__ */ u2("path", { d: "M2 12h4" }),
+  /* @__PURE__ */ u2("path", { d: "M18 12h4" }),
+  /* @__PURE__ */ u2("path", { d: "M4.93 19.07l2.83-2.83" }),
+  /* @__PURE__ */ u2("path", { d: "M16.24 7.76l2.83-2.83" })
+] });
+var PopularNotes_default = ((opts) => {
+  const options = { ...defaultOptions3, ...opts };
+  const Component = (props) => {
+    const slug2 = props.fileData.slug ?? "";
+    const isHome = slug2 === "index" || slug2 === "" || slug2 === "/";
+    const isFolderIndex = slug2 === `${options.folder}/index`;
+    let matchedContext = null;
+    if (options.restrictTo.length > 0) {
+      if (options.restrictTo.includes("home") && isHome) matchedContext = "home";
+      else if (options.restrictTo.includes("folderPage") && isFolderIndex) matchedContext = "folderPage";
+      else return null;
+    }
+    const backlinkCounts = /* @__PURE__ */ new Map();
+    for (const page of props.allFiles) {
+      const outboundLinks = page.links ?? [];
+      for (const target of outboundLinks) {
+        backlinkCounts.set(target, (backlinkCounts.get(target) ?? 0) + 1);
+      }
+    }
+    const ranked = props.allFiles.filter((page) => page.slug && !page.slug.endsWith("index")).map((page) => {
+      const simple = simplifySlug(page.slug);
+      return { page, count: backlinkCounts.get(simple) ?? 0 };
+    }).filter((entry) => entry.count >= options.minLinks).sort((a2, b2) => b2.count - a2.count);
+    const displayedPages = options.limit ? ranked.slice(0, options.limit) : ranked;
+    if (displayedPages.length === 0) return null;
+    return /* @__PURE__ */ u2("div", { class: options.className, children: [
+      matchedContext === "home" && options.sectionTitle && /* @__PURE__ */ u2("h1", { id: options.sectionTitle.toLowerCase(), children: /* @__PURE__ */ u2("a", { href: options.sectionLink, class: "internal internal-link alias", children: options.sectionTitle }) }),
+      options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
+      /* @__PURE__ */ u2("div", { class: "simple-list", children: displayedPages.map(({ page, count }) => {
+        const fm = page.frontmatter ?? {};
+        const description = fm.description;
+        return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "grid-card list-item-card", children: [
+          /* @__PURE__ */ u2("div", { class: "card-icon-wrapper", children: /* @__PURE__ */ u2(HubIcon, {}) }),
+          /* @__PURE__ */ u2("div", { class: "card-content", children: [
+            /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
+            /* @__PURE__ */ u2("div", { class: "card-metadata", children: [
+              options.showCount && /* @__PURE__ */ u2("span", { class: "card-date", children: [
+                count,
+                " ",
+                count === 1 ? "backlink" : "backlinks"
+              ] }),
+              options.showCount && description && /* @__PURE__ */ u2("span", { class: "meta-separator", children: " \u2022 " }),
               description && /* @__PURE__ */ u2("span", { class: "card-desc", children: description })
             ] })
           ] })
@@ -257,7 +353,32 @@ var NoteListBlogArchive = withDisplayName(
   }),
   "NoteListBlogArchive"
 );
+var PopularNotesHubHome = withDisplayName(
+  PopularNotes_default({
+    folder: "garden",
+    sectionTitle: "Hub Notes",
+    sectionLink: "/garden/",
+    limit: 5,
+    showCount: true,
+    minLinks: 2,
+    className: "popular-notes",
+    restrictTo: ["home"]
+  }),
+  "PopularNotesHubHome"
+);
+var PopularNotesGardenFolder = withDisplayName(
+  PopularNotes_default({
+    folder: "garden",
+    title: "Most Linked",
+    limit: 0,
+    showCount: true,
+    minLinks: 1,
+    className: "popular-notes",
+    restrictTo: ["folderPage"]
+  }),
+  "PopularNotesGardenFolder"
+);
 
-export { BookGridRead, BookGridReadingNow, HomeArchiveRow_default as HomeArchiveRow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome };
+export { BookGridRead, BookGridReadingNow, HomeArchiveRow_default as HomeArchiveRow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome, PopularNotesGardenFolder, PopularNotesHubHome };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

@@ -1,6 +1,7 @@
 // src/components/index.ts
 import createBookGrid from "./BookGrid"
 import createNoteList from "./NoteList"
+import createPopularNotes from "./PopularNotes"
 
 function withDisplayName<T extends Function>(fn: T, name: string): T {
   ;(fn as unknown as { displayName: string }).displayName = name
@@ -59,3 +60,23 @@ export const NoteListBlogArchive = withDisplayName(
 )
 
 export { default as HomeArchiveRow } from "./HomeArchiveRow"
+
+export const PopularNotesHubHome = withDisplayName(
+  createPopularNotes({
+    folder: "garden",
+    sectionTitle: "Hub Notes", sectionLink: "/garden/",
+    limit: 5, showCount: true, minLinks: 2,
+    className: "popular-notes", restrictTo: ["home"],
+  }),
+  "PopularNotesHubHome",
+)
+
+export const PopularNotesGardenFolder = withDisplayName(
+  createPopularNotes({
+    folder: "garden",
+    title: "Most Linked",
+    limit: 0, showCount: true, minLinks: 1,
+    className: "popular-notes", restrictTo: ["folderPage"],
+  }),
+  "PopularNotesGardenFolder",
+)
