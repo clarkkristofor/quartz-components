@@ -209,7 +209,8 @@ var defaultOptions3 = {
   showCount: true,
   minLinks: 1,
   className: "popular-notes",
-  restrictTo: ["home"]
+  restrictTo: ["home"],
+  excludeSubfoldersOf: ["rpgs/protected"]
 };
 var HubIcon = () => /* @__PURE__ */ u2("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", class: "list-icon", children: [
   /* @__PURE__ */ u2("circle", { cx: "12", cy: "12", r: "3" }),
@@ -222,6 +223,13 @@ var HubIcon = () => /* @__PURE__ */ u2("svg", { viewBox: "0 0 24 24", fill: "non
   /* @__PURE__ */ u2("path", { d: "M4.93 19.07l2.83-2.83" }),
   /* @__PURE__ */ u2("path", { d: "M16.24 7.76l2.83-2.83" })
 ] });
+var isInExcludedSubfolder = (slug2, prefixes) => {
+  return prefixes.some((prefix) => {
+    const rest = slug2.startsWith(prefix + "/") ? slug2.slice(prefix.length + 1) : null;
+    if (rest === null) return false;
+    return rest.includes("/");
+  });
+};
 var PopularNotes_default = ((opts) => {
   const options = { ...defaultOptions3, ...opts };
   const Component = (props) => {
@@ -236,12 +244,14 @@ var PopularNotes_default = ((opts) => {
     }
     const backlinkCounts = /* @__PURE__ */ new Map();
     for (const page of props.allFiles) {
+      const sourceSlug = page.slug ?? "";
+      if (isInExcludedSubfolder(sourceSlug, options.excludeSubfoldersOf)) continue;
       const outboundLinks = page.links ?? [];
       for (const target of outboundLinks) {
         backlinkCounts.set(target, (backlinkCounts.get(target) ?? 0) + 1);
       }
     }
-    const ranked = props.allFiles.filter((page) => page.slug && !page.slug.endsWith("index")).map((page) => {
+    const ranked = props.allFiles.filter((page) => page.slug && !page.slug.endsWith("index")).filter((page) => !isInExcludedSubfolder(page.slug, options.excludeSubfoldersOf)).map((page) => {
       const simple = simplifySlug(page.slug);
       return { page, count: backlinkCounts.get(simple) ?? 0 };
     }).filter((entry) => entry.count >= options.minLinks).sort((a2, b2) => b2.count - a2.count);
