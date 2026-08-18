@@ -158,7 +158,8 @@ var NoteList_default = ((opts) => {
       options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
       /* @__PURE__ */ u2("div", { class: "simple-list", children: displayedPages.map((page) => {
         const fm = page.frontmatter ?? {};
-        const description = page.description ?? fm.description;
+        const rawDescription = page.description ?? fm.description;
+        const description = rawDescription && rawDescription.length > 80 ? rawDescription.slice(0, 80).trimEnd() + "\u2026" : rawDescription;
         const rawDate = fm.date;
         const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) : void 0;
         return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "internal internal-link grid-card list-item-card", "data-slug": page.slug, children: [

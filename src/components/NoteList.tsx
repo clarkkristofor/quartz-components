@@ -86,7 +86,10 @@ export default ((opts?: NoteListOptions) => {
         <div class="simple-list">
           {displayedPages.map((page) => {
             const fm = (page.frontmatter ?? {}) as Record<string, any>
-            const description = (page as any).description ?? fm.description as string | undefined
+            const rawDescription = (page as any).description ?? (fm.description as string | undefined)
+            const description = rawDescription && rawDescription.length > 80
+              ? rawDescription.slice(0, 80).trimEnd() + "…"
+              : rawDescription
             const rawDate = fm.date as string | undefined
             const formattedDate = rawDate
                 ? new Date(rawDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
