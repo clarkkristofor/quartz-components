@@ -262,20 +262,15 @@ var PopularNotes_default = ((opts) => {
       options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
       /* @__PURE__ */ u2("div", { class: "simple-list", children: displayedPages.map(({ page, count }) => {
         const fm = page.frontmatter ?? {};
-        const description = fm.description;
         return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "grid-card list-item-card", children: [
           /* @__PURE__ */ u2("div", { class: "card-icon-wrapper", children: /* @__PURE__ */ u2(HubIcon, {}) }),
           /* @__PURE__ */ u2("div", { class: "card-content", children: [
             /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
-            /* @__PURE__ */ u2("div", { class: "card-metadata", children: [
-              options.showCount && /* @__PURE__ */ u2("span", { class: "card-date", children: [
-                count,
-                " ",
-                count === 1 ? "backlink" : "backlinks"
-              ] }),
-              options.showCount && description && /* @__PURE__ */ u2("span", { class: "meta-separator", children: " \u2022 " }),
-              description && /* @__PURE__ */ u2("span", { class: "card-desc", children: description })
-            ] })
+            /* @__PURE__ */ u2("div", { class: "card-metadata", children: options.showCount && /* @__PURE__ */ u2("span", { class: "card-date", children: [
+              count,
+              " ",
+              count === 1 ? "backlink" : "backlinks"
+            ] }) })
           ] })
         ] }, page.slug);
       }) })
@@ -368,7 +363,7 @@ var PopularNotesHubHome = withDisplayName(
     folder: "garden",
     sectionTitle: "Hub Notes",
     sectionLink: "/garden/",
-    limit: 5,
+    limit: 8,
     showCount: true,
     minLinks: 2,
     className: "popular-notes",

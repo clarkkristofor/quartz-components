@@ -65,7 +65,7 @@ export const PopularNotesHubHome = withDisplayName(
   createPopularNotes({
     folder: "garden",
     sectionTitle: "Hub Notes", sectionLink: "/garden/",
-    limit: 5, showCount: true, minLinks: 2,
+    limit: 8, showCount: true, minLinks: 2,
     className: "popular-notes", restrictTo: ["home"],
   }),
   "PopularNotesHubHome",
