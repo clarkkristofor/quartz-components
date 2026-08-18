@@ -161,7 +161,7 @@ var NoteList_default = ((opts) => {
         const description = page.description ?? fm.description;
         const rawDate = fm.date;
         const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) : void 0;
-        return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "grid-card list-item-card", children: [
+        return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "internal internal-link grid-card list-item-card", "data-slug": page.slug, children: [
           /* @__PURE__ */ u2("div", { class: "card-icon-wrapper", children: isMusic ? /* @__PURE__ */ u2(MusicIcon, {}) : /* @__PURE__ */ u2(NoteIcon, {}) }),
           /* @__PURE__ */ u2("div", { class: "card-content", children: [
             /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),
@@ -262,7 +262,7 @@ var PopularNotes_default = ((opts) => {
       options.title && /* @__PURE__ */ u2("h2", { class: "garden-title", children: options.title }),
       /* @__PURE__ */ u2("div", { class: "simple-list", children: displayedPages.map(({ page, count }) => {
         const fm = page.frontmatter ?? {};
-        return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "grid-card list-item-card", children: [
+        return /* @__PURE__ */ u2("a", { href: `/${page.slug}`, class: "internal internal-link grid-card list-item-card", "data-slug": page.slug, children: [
           /* @__PURE__ */ u2("div", { class: "card-icon-wrapper", children: /* @__PURE__ */ u2(HubIcon, {}) }),
           /* @__PURE__ */ u2("div", { class: "card-content", children: [
             /* @__PURE__ */ u2("h3", { children: fm.title ?? page.slug?.split("/").pop() ?? "Untitled" }),

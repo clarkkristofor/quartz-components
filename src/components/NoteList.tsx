@@ -93,7 +93,7 @@ export default ((opts?: NoteListOptions) => {
                 : undefined
 
             return (
-                <a href={`/${page.slug}`} class="grid-card list-item-card" key={page.slug}>
+                <a href={`/${page.slug}`} class="internal internal-link grid-card list-item-card" data-slug={page.slug} key={page.slug}>
                     <div class="card-icon-wrapper">
                     {isMusic ? <MusicIcon /> : <NoteIcon />}
                     </div>
