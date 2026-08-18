@@ -120,7 +120,9 @@
       "NoteListMusicHome": { "displayName": "Note List — Music Home", "defaultPosition": "afterBody", "defaultPriority": 25 },
       "NoteListBlogHome": { "displayName": "Note List — Blog Home", "defaultPosition": "afterBody", "defaultPriority": 25 },
       "NoteListMusicArchive": { "displayName": "Note List — Music Archive", "defaultPosition": "afterBody", "defaultPriority": 25 },
-      "NoteListBlogArchive": { "displayName": "Note List — Blog Archive", "defaultPosition": "afterBody", "defaultPriority": 25 }
+      "NoteListBlogArchive": { "displayName": "Note List — Blog Archive", "defaultPosition": "afterBody", "defaultPriority": 25 },
+      "PopularNotesHubHome": { "displayName": "Popular Notes — Hub Home", "defaultPosition": "afterBody", "defaultPriority": 55 },
+      "PopularNotesGardenFolder": { "displayName": "Popular Notes — Garden Folder", "defaultPosition": "afterBody", "defaultPriority": 30 }
     }
   },
   "engines": {
