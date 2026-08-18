@@ -365,7 +365,7 @@ var PopularNotesHubHome = withDisplayName(
     sectionLink: "/garden/",
     limit: 8,
     showCount: true,
-    minLinks: 2,
+    minLinks: 3,
     className: "popular-notes",
     restrictTo: ["home"]
   }),
@@ -377,7 +377,7 @@ var PopularNotesGardenFolder = withDisplayName(
     title: "Most Linked",
     limit: 0,
     showCount: true,
-    minLinks: 1,
+    minLinks: 2,
     className: "popular-notes",
     restrictTo: ["folderPage"]
   }),
