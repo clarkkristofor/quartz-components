@@ -2,6 +2,7 @@
 import createBookGrid from "./BookGrid"
 import createNoteList from "./NoteList"
 import createPopularNotes from "./PopularNotes"
+import createBookLibrary from "./BookLibrary"
 
 function withDisplayName<T extends Function>(fn: T, name: string): T {
   ;(fn as unknown as { displayName: string }).displayName = name
@@ -79,4 +80,9 @@ export const PopularNotesGardenFolder = withDisplayName(
     className: "popular-notes", restrictTo: ["folderPage"],
   }),
   "PopularNotesGardenFolder",
+)
+
+export const BookLibrary = withDisplayName(
+  createBookLibrary({ folder: "books", pageSlug: "books/library" }),
+  "BookLibrary",
 )

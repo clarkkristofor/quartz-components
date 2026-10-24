@@ -280,6 +280,141 @@ var PopularNotes_default = ((opts) => {
   return Component;
 });
 
+// src/components/BookLibrary.tsx
+var defaultOptions4 = {
+  folder: "books",
+  pageSlug: "books/library",
+  title: "",
+  className: "book-library"
+};
+var asText = (v2) => Array.isArray(v2) ? v2.join(", ") : v2 === void 0 || v2 === null ? "" : String(v2);
+function authorSortKey(author) {
+  const first = author.split(/;|,| & | and /)[0].replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim();
+  const parts = first.split(/\s+/).filter((p2) => !/^(jr\.?|sr\.?|ii|iii|phd|md)$/i.test(p2));
+  return (parts[parts.length - 1] ?? "").toLowerCase();
+}
+var cover = (url) => url.replace(/^http:/, "https:").replace("&edge=curl", "");
+var BookLibrary_default = ((opts) => {
+  const options = { ...defaultOptions4, ...opts };
+  const Component = (props) => {
+    const slug2 = (props.fileData.slug ?? "").toLowerCase();
+    if (slug2 !== options.pageSlug.toLowerCase()) return null;
+    const folder = options.folder.toLowerCase() + "/";
+    const books = props.allFiles.filter((page) => {
+      const s2 = (page.slug ?? "").toLowerCase();
+      if (!s2.startsWith(folder) || s2.endsWith("index") || s2 === slug2) return false;
+      const fm = page.frontmatter ?? {};
+      return fm.library !== false && fm.library !== "false";
+    }).map((page) => {
+      const fm = page.frontmatter ?? {};
+      const title = asText(fm.title) || (page.slug ?? "").split("/").pop() || "Untitled";
+      const author = asText(fm.author || fm.authors);
+      const publisher = asText(fm.publisher);
+      const year = asText(fm.published || fm.year);
+      const categories = asText(fm.categories);
+      const image = asText(fm.image || fm.coverUrl);
+      return { slug: page.slug ?? "", title, author, publisher, year, categories, image };
+    }).sort((a2, b2) => authorSortKey(a2.author).localeCompare(authorSortKey(b2.author)) || a2.title.localeCompare(b2.title));
+    if (books.length === 0) return null;
+    return /* @__PURE__ */ u2("div", { class: options.className, children: [
+      options.title && /* @__PURE__ */ u2("h2", { children: options.title }),
+      /* @__PURE__ */ u2("div", { class: "library-controls", children: [
+        /* @__PURE__ */ u2("input", { type: "search", class: "library-search", placeholder: "Search title, author, publisher\u2026", "aria-label": "Search the library" }),
+        /* @__PURE__ */ u2("select", { class: "library-sort", "aria-label": "Sort by", children: [
+          /* @__PURE__ */ u2("option", { value: "author", children: "Author" }),
+          /* @__PURE__ */ u2("option", { value: "title", children: "Title" }),
+          /* @__PURE__ */ u2("option", { value: "year", children: "Year" })
+        ] })
+      ] }),
+      /* @__PURE__ */ u2("p", { class: "library-count", "data-total": books.length, children: [
+        books.length,
+        " books"
+      ] }),
+      /* @__PURE__ */ u2("ul", { class: "library-list", children: books.map((b2) => /* @__PURE__ */ u2(
+        "li",
+        {
+          class: "library-item",
+          "data-search": `${b2.title} ${b2.author} ${b2.publisher} ${b2.categories}`.toLowerCase(),
+          "data-title": b2.title.toLowerCase().replace(/^(the|a|an) /, ""),
+          "data-author": authorSortKey(b2.author),
+          "data-year": b2.year,
+          children: /* @__PURE__ */ u2("a", { href: `/${b2.slug}`, class: "internal library-link", children: [
+            /* @__PURE__ */ u2("span", { class: "library-cover", children: b2.image && /* @__PURE__ */ u2("img", { src: cover(b2.image), alt: "", loading: "lazy" }) }),
+            /* @__PURE__ */ u2("span", { class: "library-text", children: [
+              /* @__PURE__ */ u2("span", { class: "library-title", children: b2.title }),
+              b2.author && /* @__PURE__ */ u2("span", { class: "library-author", children: b2.author }),
+              (b2.publisher || b2.year) && /* @__PURE__ */ u2("span", { class: "library-meta", children: [b2.publisher, b2.year].filter(Boolean).join(" \xB7 ") })
+            ] })
+          ] })
+        },
+        b2.slug
+      )) }),
+      /* @__PURE__ */ u2("p", { class: "library-empty", hidden: true, children: "No books match." })
+    ] });
+  };
+  Component.afterDOMLoaded = `
+document.addEventListener("nav", () => {
+  const root = document.querySelector(".${options.className}")
+  if (!root || root.dataset.ready) return
+  root.dataset.ready = "1"
+  const input = root.querySelector(".library-search")
+  const sort = root.querySelector(".library-sort")
+  const list = root.querySelector(".library-list")
+  const count = root.querySelector(".library-count")
+  const empty = root.querySelector(".library-empty")
+  const items = Array.from(list.children)
+  const total = items.length
+
+  const filter = () => {
+    const terms = input.value.toLowerCase().trim().split(/\\s+/).filter(Boolean)
+    let shown = 0
+    for (const li of items) {
+      const hay = li.dataset.search || ""
+      const match = terms.every((t) => hay.includes(t))
+      li.hidden = !match
+      if (match) shown++
+    }
+    count.textContent = shown === total ? total + " books" : shown + " of " + total + " books"
+    empty.hidden = shown !== 0
+  }
+
+  const reorder = () => {
+    const key = sort.value
+    const sorted = items.slice().sort((a, b) => {
+      if (key === "year") return (b.dataset.year || "0").localeCompare(a.dataset.year || "0")
+      return (a.dataset[key] || "").localeCompare(b.dataset[key] || "") ||
+             (a.dataset.title || "").localeCompare(b.dataset.title || "")
+    })
+    for (const li of sorted) list.appendChild(li)
+  }
+
+  input.addEventListener("input", filter)
+  sort.addEventListener("change", reorder)
+})
+`;
+  Component.css = `
+.book-library .library-controls { display: flex; gap: 0.5rem; margin: 1rem 0 0.25rem; }
+.book-library .library-search { flex: 1; min-width: 0; padding: 0.5rem 0.75rem; font: inherit; color: var(--dark);
+  background: var(--light); border: 1px solid var(--lightgray); border-radius: 6px; }
+.book-library .library-sort { padding: 0.5rem; font: inherit; color: var(--dark); background: var(--light);
+  border: 1px solid var(--lightgray); border-radius: 6px; }
+.book-library .library-count { margin: 0.25rem 0 0.75rem; font-size: 0.85rem; color: var(--gray); }
+.book-library .library-list { list-style: none; padding: 0; margin: 0; }
+.book-library .library-item { margin: 0; padding: 0; }
+.book-library .library-item[hidden] { display: none; }
+.book-library .library-link { display: flex; gap: 0.75rem; align-items: center; padding: 0.4rem 0;
+  border-bottom: 1px solid var(--lightgray); text-decoration: none; color: inherit; background: none; }
+.book-library .library-link:hover .library-title { color: var(--secondary); }
+.book-library .library-cover { flex: 0 0 40px; width: 40px; height: 60px; background: var(--lightgray); border-radius: 2px; overflow: hidden; }
+.book-library .library-cover img { width: 100%; height: 100%; object-fit: cover; display: block; margin: 0; }
+.book-library .library-text { display: flex; flex-direction: column; min-width: 0; }
+.book-library .library-title { font-weight: 600; line-height: 1.3; }
+.book-library .library-author { font-size: 0.85rem; }
+.book-library .library-meta { font-size: 0.75rem; color: var(--gray); }
+`;
+  return Component;
+});
+
 // src/components/HomeArchiveRow.tsx
 var HomeArchiveRow = ((props) => {
   return /* @__PURE__ */ u2("div", { class: "home-archive-row", children: [
@@ -384,7 +519,11 @@ var PopularNotesGardenFolder = withDisplayName(
   }),
   "PopularNotesGardenFolder"
 );
+var BookLibrary = withDisplayName(
+  BookLibrary_default({ folder: "books", pageSlug: "books/library" }),
+  "BookLibrary"
+);
 
-export { BookGridRead, BookGridReadingNow, HomeArchiveRow_default as HomeArchiveRow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome, PopularNotesGardenFolder, PopularNotesHubHome };
+export { BookGridRead, BookGridReadingNow, BookLibrary, HomeArchiveRow_default as HomeArchiveRow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome, PopularNotesGardenFolder, PopularNotesHubHome };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

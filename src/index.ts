@@ -3,6 +3,7 @@ export * from "./components"
 
 export type { BookGridOptions } from "./components/BookGrid"
 export type { NoteListOptions } from "./components/NoteList"
+export type { BookLibraryOptions } from "./components/BookLibrary"
 export type {
   QuartzComponent,
   QuartzComponentProps,
