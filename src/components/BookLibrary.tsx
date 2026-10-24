@@ -48,6 +48,9 @@ export default ((opts?: BookLibraryOptions) => {
       .filter((page) => {
         const s = (page.slug ?? "").toLowerCase()
         if (!s.startsWith(folder) || s.endsWith("index") || s === slug) return false
+        // Skip Bases views and canvases (e.g. "Books Read.base")
+        const fp = String((page as { filePath?: string }).filePath ?? "").toLowerCase()
+        if (fp.endsWith(".base") || fp.endsWith(".canvas")) return false
         const fm = (page.frontmatter ?? {}) as Record<string, unknown>
         return fm.library !== false && fm.library !== "false"
       })
@@ -61,7 +64,11 @@ export default ((opts?: BookLibraryOptions) => {
         const image = asText(fm.image || fm.coverUrl)
         return { slug: page.slug ?? "", title, author, publisher, year, categories, image }
       })
-      .sort((a, b) => authorSortKey(a.author).localeCompare(authorSortKey(b.author)) || a.title.localeCompare(b.title))
+      .sort((a, b) => {
+        const ka = authorSortKey(a.author), kb = authorSortKey(b.author)
+        if (!ka !== !kb) return ka ? -1 : 1   // books with no author go last
+        return ka.localeCompare(kb) || a.title.localeCompare(b.title)
+      })
 
     if (books.length === 0) return null
 
@@ -136,7 +143,9 @@ document.addEventListener("nav", () => {
     const key = sort.value
     const sorted = items.slice().sort((a, b) => {
       if (key === "year") return (b.dataset.year || "0").localeCompare(a.dataset.year || "0")
-      return (a.dataset[key] || "").localeCompare(b.dataset[key] || "") ||
+      const va = a.dataset[key] || "", vb = b.dataset[key] || ""
+      if (!va !== !vb) return va ? -1 : 1
+      return va.localeCompare(vb) ||
              (a.dataset.title || "").localeCompare(b.dataset.title || "")
     })
     for (const li of sorted) list.appendChild(li)

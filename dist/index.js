@@ -303,6 +303,8 @@ var BookLibrary_default = ((opts) => {
     const books = props.allFiles.filter((page) => {
       const s2 = (page.slug ?? "").toLowerCase();
       if (!s2.startsWith(folder) || s2.endsWith("index") || s2 === slug2) return false;
+      const fp = String(page.filePath ?? "").toLowerCase();
+      if (fp.endsWith(".base") || fp.endsWith(".canvas")) return false;
       const fm = page.frontmatter ?? {};
       return fm.library !== false && fm.library !== "false";
     }).map((page) => {
@@ -314,7 +316,11 @@ var BookLibrary_default = ((opts) => {
       const categories = asText(fm.categories);
       const image = asText(fm.image || fm.coverUrl);
       return { slug: page.slug ?? "", title, author, publisher, year, categories, image };
-    }).sort((a2, b2) => authorSortKey(a2.author).localeCompare(authorSortKey(b2.author)) || a2.title.localeCompare(b2.title));
+    }).sort((a2, b2) => {
+      const ka = authorSortKey(a2.author), kb = authorSortKey(b2.author);
+      if (!ka !== !kb) return ka ? -1 : 1;
+      return ka.localeCompare(kb) || a2.title.localeCompare(b2.title);
+    });
     if (books.length === 0) return null;
     return /* @__PURE__ */ u2("div", { class: options.className, children: [
       options.title && /* @__PURE__ */ u2("h2", { children: options.title }),
@@ -382,7 +388,9 @@ document.addEventListener("nav", () => {
     const key = sort.value
     const sorted = items.slice().sort((a, b) => {
       if (key === "year") return (b.dataset.year || "0").localeCompare(a.dataset.year || "0")
-      return (a.dataset[key] || "").localeCompare(b.dataset[key] || "") ||
+      const va = a.dataset[key] || "", vb = b.dataset[key] || ""
+      if (!va !== !vb) return va ? -1 : 1
+      return va.localeCompare(vb) ||
              (a.dataset.title || "").localeCompare(b.dataset.title || "")
     })
     for (const li of sorted) list.appendChild(li)
