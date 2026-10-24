@@ -288,8 +288,11 @@ var defaultOptions4 = {
   className: "book-library"
 };
 var asText = (v2) => Array.isArray(v2) ? v2.join(", ") : v2 === void 0 || v2 === null ? "" : String(v2);
+var ORG = /\b(center|centre|community|institute|collective|association|network|press|church|society|council|consultation|committee|foundation|university|fellowship|ministries|publishing|conference|alliance|abbey)\b/i;
 function authorSortKey(author) {
-  const first = (author.split(/;|,| & | and /)[0] ?? "").replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim();
+  const firstEntry = (author.split(";")[0] ?? "").trim();
+  if (ORG.test(firstEntry)) return firstEntry.toLowerCase().replace(/^the /, "");
+  const first = (firstEntry.split(/,| & | and /)[0] ?? "").replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim();
   const parts = first.split(/\s+/).filter((p2) => !/^(jr\.?|sr\.?|ii|iii|phd|md)$/i.test(p2));
   return (parts[parts.length - 1] ?? "").toLowerCase();
 }
@@ -306,7 +309,9 @@ var BookLibrary_default = ((opts) => {
       const fp = String(page.filePath ?? "").toLowerCase();
       if (fp.endsWith(".base") || fp.endsWith(".canvas")) return false;
       const fm = page.frontmatter ?? {};
-      return fm.library !== false && fm.library !== "false";
+      if (fm.library === false || fm.library === "false") return false;
+      if (fm.library === true || fm.library === "true") return true;
+      return ["author", "authors", "isbn", "image", "coverUrl", "published", "publisher", "year"].some((k2) => !!fm[k2]);
     }).map((page) => {
       const fm = page.frontmatter ?? {};
       const title = asText(fm.title) || (page.slug ?? "").split("/").pop() || "Untitled";

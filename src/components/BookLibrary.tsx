@@ -27,9 +27,14 @@ const defaultOptions: Required<BookLibraryOptions> = {
 const asText = (v: unknown): string =>
   Array.isArray(v) ? v.join(", ") : v === undefined || v === null ? "" : String(v)
 
+// Organizations sort by their full name ("Center for Action and Contemplation" -> "center for...")
+const ORG = /\b(center|centre|community|institute|collective|association|network|press|church|society|council|consultation|committee|foundation|university|fellowship|ministries|publishing|conference|alliance|abbey)\b/i
+
 // Sort key: last name of the first author ("Justo L. González; ..." -> "gonzález")
 function authorSortKey(author: string): string {
-  const first = (author.split(/;|,| & | and /)[0] ?? "").replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim()
+  const firstEntry = (author.split(";")[0] ?? "").trim()
+  if (ORG.test(firstEntry)) return firstEntry.toLowerCase().replace(/^the /, "")
+  const first = (firstEntry.split(/,| & | and /)[0] ?? "").replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim()
   const parts = first.split(/\s+/).filter((p) => !/^(jr\.?|sr\.?|ii|iii|phd|md)$/i.test(p))
   return (parts[parts.length - 1] ?? "").toLowerCase()
 }
@@ -52,7 +57,10 @@ export default ((opts?: BookLibraryOptions) => {
         const fp = String((page as { filePath?: string }).filePath ?? "").toLowerCase()
         if (fp.endsWith(".base") || fp.endsWith(".canvas")) return false
         const fm = (page.frontmatter ?? {}) as Record<string, unknown>
-        return fm.library !== false && fm.library !== "false"
+        if (fm.library === false || fm.library === "false") return false
+        if (fm.library === true || fm.library === "true") return true
+        // Only real book notes: must have at least one book property (skips Bases views, etc.)
+        return ["author", "authors", "isbn", "image", "coverUrl", "published", "publisher", "year"].some((k) => !!fm[k])
       })
       .map((page) => {
         const fm = (page.frontmatter ?? {}) as Record<string, unknown>
