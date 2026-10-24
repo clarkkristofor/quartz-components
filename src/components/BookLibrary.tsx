@@ -29,7 +29,7 @@ const asText = (v: unknown): string =>
 
 // Sort key: last name of the first author ("Justo L. González; ..." -> "gonzález")
 function authorSortKey(author: string): string {
-  const first = author.split(/;|,| & | and /)[0].replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim()
+  const first = (author.split(/;|,| & | and /)[0] ?? "").replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim()
   const parts = first.split(/\s+/).filter((p) => !/^(jr\.?|sr\.?|ii|iii|phd|md)$/i.test(p))
   return (parts[parts.length - 1] ?? "").toLowerCase()
 }

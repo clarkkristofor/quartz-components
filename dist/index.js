@@ -289,7 +289,7 @@ var defaultOptions4 = {
 };
 var asText = (v2) => Array.isArray(v2) ? v2.join(", ") : v2 === void 0 || v2 === null ? "" : String(v2);
 function authorSortKey(author) {
-  const first = author.split(/;|,| & | and /)[0].replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim();
+  const first = (author.split(/;|,| & | and /)[0] ?? "").replace(/\(.*?\)/g, "").replace(/\bet al\.?/g, "").trim();
   const parts = first.split(/\s+/).filter((p2) => !/^(jr\.?|sr\.?|ii|iii|phd|md)$/i.test(p2));
   return (parts[parts.length - 1] ?? "").toLowerCase();
 }
