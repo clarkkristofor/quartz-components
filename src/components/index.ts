@@ -88,4 +88,4 @@ export const BookLibrary = withDisplayName(
   "BookLibrary",
 )
 
-export const MobileSidebarToggle = withDisplayName(MobileSidebarToggleImp1, "MobileSidebarToggle")
+export const MobileSidebarToggle = withDisplayName(MobileSidebarToggleImp1(), "MobileSidebarToggle")

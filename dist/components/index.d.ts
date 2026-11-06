@@ -16,7 +16,7 @@ declare const NoteListBlogArchive: _quartz_community_types.QuartzComponent;
 declare const PopularNotesHubHome: _quartz_community_types.QuartzComponent;
 declare const PopularNotesGardenFolder: _quartz_community_types.QuartzComponent;
 declare const BookLibrary: _quartz_community_types.QuartzComponent;
-declare const MobileSidebarToggle: () => {
+declare const MobileSidebarToggle: {
     (): preact.JSX.Element;
     css: string;
     afterDOMLoaded: string;

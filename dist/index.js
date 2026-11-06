@@ -662,7 +662,7 @@ var BookLibrary = withDisplayName(
   BookLibrary_default({ folder: "books", pageSlug: "books/library" }),
   "BookLibrary"
 );
-var MobileSidebarToggle2 = withDisplayName(MobileSidebarToggle_default, "MobileSidebarToggle");
+var MobileSidebarToggle2 = withDisplayName(MobileSidebarToggle_default(), "MobileSidebarToggle");
 
 export { BookGridRead, BookGridReadingNow, BookLibrary, HomeArchiveRow_default as HomeArchiveRow, MobileSidebarToggle2 as MobileSidebarToggle, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome, PopularNotesGardenFolder, PopularNotesHubHome };
 //# sourceMappingURL=index.js.map
