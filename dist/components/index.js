@@ -14,9 +14,6 @@ function getBookStatus(frontmatter) {
   return finishedDate.getTime() > today.getTime() ? "reading" : "finished";
 }
 var l;
-function S(n2) {
-  return n2.children;
-}
 l = { __e: function(n2, l2, u3, t2) {
   for (var i2, r2, o2; l2 = l2.__; ) if ((i2 = l2.__c) && !i2.__) try {
     if ((r2 = i2.constructor) && null != r2.getDerivedStateFromError && (i2.setState(r2.getDerivedStateFromError(n2)), o2 = i2.__d), null != i2.componentDidCatch && (i2.componentDidCatch(n2, t2 || {}), o2 = i2.__d), o2) return i2.__E = i2;
@@ -433,7 +430,7 @@ document.addEventListener("nav", () => {
 
 // src/components/MobileSidebarToggle.tsx
 var MobileSidebarToggle = () => {
-  const Component = () => /* @__PURE__ */ u2(S, { children: [
+  const Component = () => /* @__PURE__ */ u2("div", { class: "mobile-sidebar-toggle", children: [
     /* @__PURE__ */ u2("button", { class: "sidebar-toggle", type: "button", "aria-label": "Open contents and backlinks", "aria-expanded": "false", children: /* @__PURE__ */ u2("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "aria-hidden": "true", children: [
       /* @__PURE__ */ u2("line", { x1: "8", y1: "6", x2: "21", y2: "6" }),
       /* @__PURE__ */ u2("line", { x1: "8", y1: "12", x2: "21", y2: "12" }),
