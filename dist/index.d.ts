@@ -1,5 +1,6 @@
-export { BookGridRead, BookGridReadingNow, BookLibrary, HomeArchiveRow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome, PopularNotesGardenFolder, PopularNotesHubHome } from './components/index.js';
+export { BookGridRead, BookGridReadingNow, BookLibrary, HomeArchiveRow, MobileSidebarToggle, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome, PopularNotesGardenFolder, PopularNotesHubHome } from './components/index.js';
 export { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from '@quartz-community/types';
+import 'preact';
 
 type BookStatus = "to-read" | "reading" | "finished";
 

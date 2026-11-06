@@ -14,6 +14,9 @@ function getBookStatus(frontmatter) {
   return finishedDate.getTime() > today.getTime() ? "reading" : "finished";
 }
 var l;
+function S(n2) {
+  return n2.children;
+}
 l = { __e: function(n2, l2, u3, t2) {
   for (var i2, r2, o2; l2 = l2.__; ) if ((i2 = l2.__c) && !i2.__) try {
     if ((r2 = i2.constructor) && null != r2.getDerivedStateFromError && (i2.setState(r2.getDerivedStateFromError(n2)), o2 = i2.__d), null != i2.componentDidCatch && (i2.componentDidCatch(n2, t2 || {}), o2 = i2.__d), o2) return i2.__E = i2;
@@ -428,6 +431,132 @@ document.addEventListener("nav", () => {
   return Component;
 });
 
+// src/components/MobileSidebarToggle.tsx
+var MobileSidebarToggle = () => {
+  const Component = () => /* @__PURE__ */ u2(S, { children: [
+    /* @__PURE__ */ u2("button", { class: "sidebar-toggle", type: "button", "aria-label": "Open contents and backlinks", "aria-expanded": "false", children: /* @__PURE__ */ u2("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "aria-hidden": "true", children: [
+      /* @__PURE__ */ u2("line", { x1: "8", y1: "6", x2: "21", y2: "6" }),
+      /* @__PURE__ */ u2("line", { x1: "8", y1: "12", x2: "21", y2: "12" }),
+      /* @__PURE__ */ u2("line", { x1: "8", y1: "18", x2: "21", y2: "18" }),
+      /* @__PURE__ */ u2("circle", { cx: "3.5", cy: "6", r: "1" }),
+      /* @__PURE__ */ u2("circle", { cx: "3.5", cy: "12", r: "1" }),
+      /* @__PURE__ */ u2("circle", { cx: "3.5", cy: "18", r: "1" })
+    ] }) }),
+    /* @__PURE__ */ u2("div", { class: "sidebar-backdrop", "aria-hidden": "true" })
+  ] });
+  Component.css = `
+.sidebar-toggle,
+.sidebar-backdrop {
+  display: none;
+}
+
+@media all and (max-width: 800px) {
+  /* Floating button, always visible while scrolling */
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1001;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: none;
+    border-radius: 50%;
+    background: var(--secondary);
+    color: var(--light);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
+
+  /* Sidebar becomes an off-screen drawer.
+     !important is needed to beat Quartz's base mobile sidebar rules. */
+  .sidebar.left {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+    width: min(85vw, 22rem) !important;
+    height: 100dvh !important;
+    overflow-y: auto !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 1.5rem !important;
+    padding: 2rem 1.25rem 6rem !important;
+    background: var(--light) !important;
+    z-index: 1000 !important;
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.25s ease, visibility 0.25s;
+  }
+
+  body.sidebar-open .sidebar.left {
+    transform: none;
+    visibility: visible;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Dim the page behind the open drawer; tap it to close */
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  body.sidebar-open .sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.sidebar-open {
+    overflow: hidden;
+  }
+}
+`;
+  Component.afterDOMLoaded = `
+document.addEventListener("nav", () => {
+  const btn = document.querySelector(".sidebar-toggle")
+  const backdrop = document.querySelector(".sidebar-backdrop")
+  const sidebar = document.querySelector(".sidebar.left")
+  if (!btn || !sidebar) return
+
+  const setOpen = (open) => {
+    document.body.classList.toggle("sidebar-open", open)
+    btn.setAttribute("aria-expanded", String(open))
+    btn.setAttribute("aria-label", open ? "Close contents and backlinks" : "Open contents and backlinks")
+  }
+  const toggle = () => setOpen(!document.body.classList.contains("sidebar-open"))
+  const close = () => setOpen(false)
+  const onSidebarClick = (e) => { if (e.target.closest("a")) close() }
+  const onKey = (e) => { if (e.key === "Escape") close() }
+
+  close() // always start closed on each page
+
+  btn.addEventListener("click", toggle)
+  backdrop?.addEventListener("click", close)
+  sidebar.addEventListener("click", onSidebarClick)
+  document.addEventListener("keydown", onKey)
+
+  window.addCleanup?.(() => {
+    btn.removeEventListener("click", toggle)
+    backdrop?.removeEventListener("click", close)
+    sidebar.removeEventListener("click", onSidebarClick)
+    document.removeEventListener("keydown", onKey)
+  })
+})
+`;
+  return Component;
+};
+var MobileSidebarToggle_default = MobileSidebarToggle;
+
 // src/components/HomeArchiveRow.tsx
 var HomeArchiveRow = ((props) => {
   return /* @__PURE__ */ u2("div", { class: "home-archive-row", children: [
@@ -536,7 +665,8 @@ var BookLibrary = withDisplayName(
   BookLibrary_default({ folder: "books", pageSlug: "books/library" }),
   "BookLibrary"
 );
+var MobileSidebarToggle2 = withDisplayName(MobileSidebarToggle_default, "MobileSidebarToggle");
 
-export { BookGridRead, BookGridReadingNow, BookLibrary, HomeArchiveRow_default as HomeArchiveRow, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome, PopularNotesGardenFolder, PopularNotesHubHome };
+export { BookGridRead, BookGridReadingNow, BookLibrary, HomeArchiveRow_default as HomeArchiveRow, MobileSidebarToggle2 as MobileSidebarToggle, NoteListBlogArchive, NoteListBlogHome, NoteListMusicArchive, NoteListMusicHome, PopularNotesGardenFolder, PopularNotesHubHome };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

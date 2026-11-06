@@ -123,7 +123,8 @@
       "NoteListBlogArchive": { "displayName": "Note List — Blog Archive", "defaultPosition": "afterBody", "defaultPriority": 25 },
       "PopularNotesHubHome": { "displayName": "Popular Notes — Hub Home", "defaultPosition": "afterBody", "defaultPriority": 55 },
       "PopularNotesGardenFolder": { "displayName": "Popular Notes — Garden Folder", "defaultPosition": "afterBody", "defaultPriority": 30 },
-      "BookLibrary": { "displayName": "Book Library", "defaultPosition": "afterBody", "defaultPriority": 25 }
+      "BookLibrary": { "displayName": "Book Library", "defaultPosition": "afterBody", "defaultPriority": 25 },
+      "MobileSidebarToggle": { "displayName": "Mobile Sidebar Toggle", "defaultPosition": "afterBody", "defaultPriority": 25 }
     }
   },
   "engines": {

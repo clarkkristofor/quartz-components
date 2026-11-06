@@ -3,6 +3,7 @@ import createBookGrid from "./BookGrid"
 import createNoteList from "./NoteList"
 import createPopularNotes from "./PopularNotes"
 import createBookLibrary from "./BookLibrary"
+import MobileSidebarToggleImp1 from "./MobileSidebarToggle"
 
 function withDisplayName<T extends Function>(fn: T, name: string): T {
   ;(fn as unknown as { displayName: string }).displayName = name
@@ -86,3 +87,5 @@ export const BookLibrary = withDisplayName(
   createBookLibrary({ folder: "books", pageSlug: "books/library" }),
   "BookLibrary",
 )
+
+export const MobileSidebarToggle = withDisplayName(MobileSidebarToggleImp1, "MobileSidebarToggle")
